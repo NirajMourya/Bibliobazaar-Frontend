@@ -1,7 +1,7 @@
 import { Card, CardActionArea, CardMedia, styled } from "@mui/material";
 
 const ImageCard = (props) => {
-  const { url } = props;
+  const { url, alt } = props;
 
   return (
     <CustomCard>
@@ -11,7 +11,7 @@ const ImageCard = (props) => {
           image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm33lv0W92j2lTEfjP-AkuRKY1z7vPlKfYbQ&usqp=CAU"
           alt=""
         /> */}
-        <CardImage component="img" image={url} alt="" />
+        <CardImage component="img" image={url} alt={alt || ""} loading="lazy" />
       </CardActionArea>
     </CustomCard>
   );

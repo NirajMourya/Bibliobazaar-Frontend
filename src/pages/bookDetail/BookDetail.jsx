@@ -6,7 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
@@ -75,10 +75,8 @@ const BookDetail = () => {
   }, []);
 
   useEffect(() => {
-    console.log(user?.cart?.contents);
     const bookIds = user?.cart?.contents?.map((item) => item?.bookId);
-    console.log("bookIds", bookIds);
-    setCartBookIds([...bookIds]);
+    setCartBookIds(bookIds || []);
   }, [user]);
 
   const addToCartFn = () => {
@@ -94,10 +92,10 @@ const BookDetail = () => {
       bookAuthor: bookInfo?.bookId?.author?.[0],
       isbn: bookInfo?.bookId?.isbn,
     };
+    setCartLoader(true);
     axios
       .post(addToCartUrl, info)
       .then((res) => {
-        setCartLoader(true);
         if (res?.status === 200) {
           dispatch(updateCart(res?.data));
           setCartLoader(false);
@@ -115,15 +113,18 @@ const BookDetail = () => {
     <Wrapper>
       <Grid container spacing={5}>
         {loader ? (
-          Array.from({ length: 3 }).map(() => (
-            <Grid item xs={12} sm={4}>
-              <Skeleton variant={"rectangular"} width={400} height={400} />
+          Array.from({ length: 3 }).map((_, index) => (
+            <Grid item xs={12} sm={4} key={index}>
+              <Skeleton variant={"rectangular"} width={400} height={400} sx={{ borderRadius: "16px" }} />
             </Grid>
           ))
         ) : (
           <>
             <Grid item xs={12} sm={4}>
-              <ImageCard url={bookInfo?.bookId?.imageUrl} />
+              <ImageCard
+                url={bookInfo?.bookId?.imageUrl}
+                alt={bookInfo?.bookId?.bookName}
+              />
             </Grid>
             <Grid item xs={12} sm={4}>
               <DescriptionPaper>

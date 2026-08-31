@@ -17,11 +17,11 @@ const Footer = () => {
         <Grid item xs={12} sm={4}>
           <SocialContainer>
             <Stack flexDirection="row" gap="20px" alignItems={"center"}>
-              <a href="https://www.facebook.com" target="_blank">
-                <img src={facebook} alt="" />
+              <a href="https://www.facebook.com" target="_blank" rel="noreferrer">
+                <img src={facebook} alt="Facebook" />
               </a>
-              <a href="https://www.twitter.com" target="_blank">
-                <img src={twitter} alt="" />
+              <a href="https://www.twitter.com" target="_blank" rel="noreferrer">
+                <img src={twitter} alt="Twitter" />
               </a>
             </Stack>
             <Box>
@@ -37,7 +37,7 @@ const Footer = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <CopyrightContainer>
-            <Typography>© 2022 BiblioBazaar</Typography>
+            <Typography>© {new Date().getFullYear()} BiblioBazaar</Typography>
             <Typography>All rights reserved</Typography>
           </CopyrightContainer>
         </Grid>

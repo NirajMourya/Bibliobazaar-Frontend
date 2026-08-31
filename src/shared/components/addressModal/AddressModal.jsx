@@ -31,12 +31,13 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 600,
+  width: { xs: "92%", sm: 500, md: 600 },
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   borderRadius: "20px",
   height: "auto",
+  maxHeight: "90vh",
   overflow: "auto",
 };
 
@@ -166,7 +167,7 @@ export default function AddressModal(props) {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: (theme) => theme.palette.text.secondary,
             }}
           >
             <CloseIcon />

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import { rentDetailsUrl } from "../../config/Config";
@@ -71,7 +71,7 @@ const RentDetail = () => {
         </PageTitle>
         <Grid container spacing={2}>
           {loader ? (
-            <Spinner />
+            <Spinner fullPage />
           ) : (
             <>
               <Grid item xs={12} sm={5}>

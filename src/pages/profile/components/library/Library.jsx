@@ -199,6 +199,7 @@ const LibraryCard = (props) => {
             component="img"
             image={bookId?.imageUrl}
             alt={bookId.bookName}
+            loading="lazy"
             width={140}
             height={140}
           />

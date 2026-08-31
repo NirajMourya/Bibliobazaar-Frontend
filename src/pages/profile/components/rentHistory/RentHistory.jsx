@@ -8,6 +8,7 @@ import {
   TableHead,
   TableBody,
   Paper,
+  Skeleton,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -19,7 +20,7 @@ import {
   NavItemDiv,
 } from "./rentHistory.styles";
 import { IssuedBooksUrl, OfferedBooksUrl } from "../../../../config/Config";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const RentHistory = () => {
   const [books, setBooks] = useState([]);
@@ -35,6 +36,7 @@ const RentHistory = () => {
   }, [isOffered]);
 
   const getBookData = () => {
+    setLoader(true);
     axios
       .get(isOffered ? OfferedBooksUrl : IssuedBooksUrl)
       .then((res) => {
@@ -42,9 +44,11 @@ const RentHistory = () => {
           console.log(res.data);
           setBooks([...res.data]);
         }
+        setLoader(false);
       })
       .catch((err) => {
         console.log("error", err);
+        setLoader(false);
         toast.error(err?.message || "Something is wrong");
         throw Error(`Fetching offered/issued books list failed`);
       });
@@ -60,7 +64,13 @@ const RentHistory = () => {
           Offered
         </NavItemDiv>
       </Stack>
-      {books?.length === 0 && !loader ? (
+      {loader ? (
+        <Stack spacing={1.5} mt={3}>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} variant="rectangular" width="100%" height={70} sx={{ borderRadius: "8px" }} />
+          ))}
+        </Stack>
+      ) : books?.length === 0 ? (
         <NoRecordContent>No records found.</NoRecordContent>
       ) : (
         <TableContainer component={Paper}>
@@ -105,6 +115,8 @@ const RentHistory = () => {
                         alt={row.bookName}
                         width={60}
                         height={60}
+                        loading="lazy"
+                        style={{ objectFit: "contain" }}
                       />
                       <Stack>
                         <BookTitle>{row.bookName}</BookTitle>

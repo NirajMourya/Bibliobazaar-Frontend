@@ -15,6 +15,7 @@ import thunk from 'redux-thunk';
 import userSlice from './reducers/userSlice'
 import bookSlice from './reducers/bookSlice'
 import profileSlice from "./reducers/profileSlice";
+import uiSlice from "./reducers/uiSlice";
 
 const persistConfig = {
   key: 'root',
@@ -24,7 +25,8 @@ const persistConfig = {
 const rootReducer = combineReducers({ 
   user: userSlice,
   book: bookSlice,
-  profile: profileSlice
+  profile: profileSlice,
+  ui: uiSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

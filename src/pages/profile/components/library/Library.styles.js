@@ -40,7 +40,12 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export const LibraryPaper = styled(Paper)(({ theme }) => ({
   padding: "16px 32px",
-  marginBottom: "16px"
+  marginBottom: "16px",
+  transition: "transform 0.2s ease, box-shadow 0.2s ease",
+  "&:hover": {
+    transform: "translateY(-2px)",
+    boxShadow: theme?.shadows?.[3],
+  },
 }));
 
 export const CardImage = styled(CardMedia)(() => ({
@@ -82,11 +87,11 @@ export const CancelButton = styled(Button)((({ theme, type }) => ({
   borderRadius: '10px',
   textTransform: 'none',
   border: `1px solid ${theme?.palette?.borderGrey}`,
-  background: theme?.palette?.white,
+  background: theme?.palette?.background?.paper,
   color: theme?.palette?.black,
   '&:hover': {
     transform: 'scale(1.05)',
-    background: theme?.palette?.white,
+    background: theme?.palette?.background?.paper,
   },
   '&:disabled': {
     pointerEvents: 'none',

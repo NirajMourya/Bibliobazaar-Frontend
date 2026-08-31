@@ -24,12 +24,13 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 500,
+  width: { xs: "92%", sm: 400, md: 500 },
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   borderRadius: "20px",
   maxHeight: "550px",
+  overflow: "auto",
 };
 
 export default function BookDeleteModal(props) {
@@ -87,7 +88,7 @@ export default function BookDeleteModal(props) {
                 position: "absolute",
                 right: 8,
                 top: 8,
-                color: (theme) => theme.palette.grey[500],
+                color: (theme) => theme.palette.text.secondary,
               }}
             >
               <CloseIcon />
