@@ -20,7 +20,7 @@ export const ProfileDummyImage = styled('div')(({ theme }) => ({
 }));
 
 export const InputLabelText = styled(Typography)(({ theme }) => ({
-  color: '#000000',
+  color: theme?.palette?.black,
   fontSize: theme?.fontSize?.xs,
   fontWeight: 'bold'
 }))

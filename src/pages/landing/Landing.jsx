@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 import {
   ActionItems,
@@ -46,7 +46,13 @@ const Landing = () => {
           </TextContainer>
         </Grid>
         <Grid item md={5} xs={12}>
-          <img src={LandingImage} alt="" width={450} height={450} />
+          <img
+            src={LandingImage}
+            alt=""
+            width={450}
+            height={450}
+            style={{ objectFit: "contain", maxWidth: "100%", height: "auto" }}
+          />
         </Grid>
       </Grid>
     </LandingContainer>

@@ -2,9 +2,12 @@ import { Modal, styled, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 
 // Container
-export const Wrapper = styled('div')(() => ({
-  padding: '32px'
-}))
+export const Wrapper = styled('div')((({ theme }) => ({
+  padding: '32px',
+  [theme.breakpoints.down('sm')]: {
+    padding: '16px',
+  },
+})))
 
 // Page Title
 export const PageTitle = styled(Typography)((({ theme }) => ({
@@ -45,8 +48,7 @@ export const PrimaryButton = styled(ButtonStyles)((({ theme, padding }) => ({
 
 // Secondary Button
 export const OutlineButton = styled(ButtonStyles)((({ theme }) => ({
-  // border: `1px solid ${theme?.palette.grey}`,
-  border: `1px solid grey`,
+  border: `1px solid ${theme?.palette?.borderGrey}`,
   color: theme?.palette?.black
 })))
 

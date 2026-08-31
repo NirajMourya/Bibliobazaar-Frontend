@@ -7,7 +7,6 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useState } from "react";
 
 const AccordionFilter = (props) => {
   const {
@@ -47,9 +46,8 @@ const CheckBoxFilter = (props) => {
     setInfo,
   } = props;
 
-  const [checked, setChecked] = useState(false);
+  const checked = value?.includes(key);
   const handleChange = (event) => {
-    setChecked(event.target.checked);
     if (event.target.checked) {
       setInfo([...value, key]);
     } else {

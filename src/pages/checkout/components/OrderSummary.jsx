@@ -75,7 +75,14 @@ const OrderSummary = () => {
             key={index}
           >
             <Image>
-              <img src={item?.bookImage} alt="" width={50} height={50} />
+              <img
+                src={item?.bookImage}
+                alt={item?.bookName || "Book"}
+                width={50}
+                height={50}
+                loading="lazy"
+                style={{ objectFit: "contain" }}
+              />
             </Image>
             <Description>
               <Stack direction="column">

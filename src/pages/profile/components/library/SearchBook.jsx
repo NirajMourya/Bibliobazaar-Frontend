@@ -29,10 +29,10 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 750,
+  width: { xs: "92%", sm: 500, md: 750 },
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   // borderRadius: "20px",
   // maxHeight: "550px",
   height: "auto",
@@ -143,7 +143,7 @@ export default function BookSearchModal(props) {
               position: "absolute",
               right: 8,
               top: 8,
-              color: (theme) => theme.palette.grey[500],
+              color: (theme) => theme.palette.text.secondary,
             }}
           >
             <CloseIcon />
@@ -226,7 +226,14 @@ const SearchBookCard = (props) => {
           <BookInfo>{author.join(",")}</BookInfo>
           <BookInfo>ISBN - {isbn}</BookInfo>
         </Stack>
-        <img src={imageUrl} alt={bookName} width={100} height={100} />
+        <img
+          src={imageUrl}
+          alt={bookName}
+          width={100}
+          height={100}
+          loading="lazy"
+          style={{ objectFit: "contain" }}
+        />
       </Stack>
       <Stack mt={2} justifyContent="center" alignItems="center">
         <PrimaryButton onClick={() => selectBook()} padding={"4px 24px"}>

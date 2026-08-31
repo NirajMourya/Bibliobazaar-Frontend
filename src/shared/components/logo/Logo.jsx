@@ -1,6 +1,6 @@
 import { styled, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const LogoTypography = styled(Typography)(({ theme }) => ({
   fontFamily: "Nunito",

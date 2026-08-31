@@ -36,11 +36,9 @@ Bibliobazaar is a platform for rental and issue of books online
 
 <br/>
 
-Test Credentials for User:
+## Test Credentials
 
-- Email: project@pesto.com
-
-- Password: 11111111
+Use your own credentials or those supplied by your backend team.
 
  
 <br/>
@@ -55,7 +53,7 @@ Test Credentials for User:
 
 - Use the `npm install` command to install dependencies
 
-- Once the dependencies are finished installing, use the `npm run dev` command inside the root directory to open the app in your local browser of choice
+- Once dependencies are installed, run `npm start` inside the root directory to open the app in your local browser of choice
 
   
 

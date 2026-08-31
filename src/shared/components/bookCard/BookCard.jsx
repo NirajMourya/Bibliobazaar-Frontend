@@ -3,7 +3,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea, Stack, styled } from "@mui/material";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { setLoginOpen } from "../../../logic/reducers/userSlice";
@@ -32,7 +32,8 @@ const BookCard = (props) => {
           <CardImage
             component="img"
             image={imageUrl}
-            alt=""
+            alt={bookName}
+            loading="lazy"
             width={300}
             height={300}
           />
@@ -68,10 +69,13 @@ const BookCard = (props) => {
 
 export default BookCard;
 
-const CustomCard = styled(Card)(() => ({
+const CustomCard = styled(Card)(({ theme }) => ({
   borderRadius: "10px",
-  // width: "auto",
-  // minWidth: "300px",
+  transition: "transform 0.2s ease, box-shadow 0.2s ease",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: theme?.shadows?.[4],
+  },
 }));
 
 const CardImage = styled(CardMedia)(() => ({

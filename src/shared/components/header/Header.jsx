@@ -1,27 +1,31 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
+import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material";
+import { toggleThemeMode } from "../../../logic/reducers/uiSlice";
 
 import {
   AuthButton,
   CustomAppBar,
   CustomAvatar,
   Search,
-  SearchIconWrapper,
   SearchIconWrapperRight,
+  ClearIconWrapper,
   StyledBadge,
   StyledInputBase,
   UserName,
@@ -40,14 +44,26 @@ import { setTab } from "../../../logic/reducers/profileSlice";
 const Header = () => {
   const theme = useTheme();
   const { isLoggedIn, user, search } = useSelector((state) => state.user);
+  const { mode } = useSelector((state) => state.ui);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  // Auto search-as-you-type while already on the results page, debounced
+  useEffect(() => {
+    if (location.pathname !== "/dashboard") return;
+    const timeout = setTimeout(() => {
+      dispatch(setSearchTrigger());
+    }, 500);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -85,12 +101,22 @@ const Header = () => {
     dispatch(setSearchTrigger());
   };
 
+  const clearSearch = () => {
+    dispatch(setSearchValue(""));
+    dispatch(setSearchTrigger());
+  };
+
+  // Search isn't useful mid-checkout, but should stay visible on landing so
+  // users can browse books before signing in
+  const hideSearchRoutes = ["/checkout"];
+  const showSearch = !hideSearchRoutes.includes(location.pathname);
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={menuId}
@@ -101,6 +127,14 @@ const Header = () => {
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
+      disableScrollLock
+      transitionDuration={{ enter: 220, exit: 160 }}
+      slotProps={{
+        paper: {
+          elevation: 3,
+          sx: { mt: 1.5, minWidth: 180, borderRadius: "12px" },
+        },
+      }}
     >
       {profileTabs?.map((item, index) => (
         <MenuItem
@@ -120,7 +154,7 @@ const Header = () => {
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={mobileMenuId}
@@ -131,6 +165,14 @@ const Header = () => {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
+      disableScrollLock
+      transitionDuration={{ enter: 220, exit: 160 }}
+      slotProps={{
+        paper: {
+          elevation: 3,
+          sx: { mt: 1.5, minWidth: 180, borderRadius: "12px" },
+        },
+      }}
     >
       <MenuItem
         onClick={() => {
@@ -144,9 +186,9 @@ const Header = () => {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={user?.cart?.contents?.length || 0} color="error">
+          <StyledBadge badgeContent={user?.cart?.contents?.length || 0}>
             <ShoppingCartOutlinedIcon />
-          </Badge>
+          </StyledBadge>
         </IconButton>
         <p>Cart</p>
       </MenuItem>
@@ -167,7 +209,7 @@ const Header = () => {
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={mobileMenuId}
@@ -178,6 +220,14 @@ const Header = () => {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
+      disableScrollLock
+      transitionDuration={{ enter: 220, exit: 160 }}
+      slotProps={{
+        paper: {
+          elevation: 3,
+          sx: { mt: 1.5, minWidth: 180, borderRadius: "12px" },
+        },
+      }}
     >
       <MenuItem>
         <AuthButton onClick={() => dispatch(setLoginOpen())}>Login</AuthButton>
@@ -193,86 +243,103 @@ const Header = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <CustomAppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ gap: 2, justifyContent: "space-between" }}>
           <Logo />
-          <Box sx={{ flexGrow: 1 }} />
-          <Search sx={{ display: { xs: "none", sm: "block" } }}>
-            {/* <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper> */}
-            <StyledInputBase
-              placeholder="Books / Author / ISBN"
-              inputProps={{ "aria-label": "search" }}
-              value={search}
-              onChange={(e) => dispatch(setSearchValue(e.target.value))}
-              onKeyDown={handleKeyDown}
-            />
-            <SearchIconWrapperRight>
-              <SearchIcon onClick={() => searchIconClick()} />
-            </SearchIconWrapperRight>
-            {/* <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper> */}
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          {isLoggedIn ? (
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          {showSearch ? (
+            <Search sx={{ display: { xs: "none", sm: "flex" }, flex: 1, maxWidth: 480 }}>
+              <StyledInputBase
+                placeholder="Books / Author / ISBN"
+                inputProps={{ "aria-label": "search" }}
+                value={search}
+                onChange={(e) => dispatch(setSearchValue(e.target.value))}
+                onKeyDown={handleKeyDown}
+              />
+              {search ? (
+                <ClearIconWrapper aria-label="clear search" onClick={clearSearch}>
+                  <ClearIcon fontSize="small" />
+                </ClearIconWrapper>
+              ) : null}
+              <SearchIconWrapperRight>
+                <SearchIcon onClick={() => searchIconClick()} />
+              </SearchIconWrapperRight>
+            </Search>
+          ) : (
+            <Box sx={{ flex: 1 }} />
+          )}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <IconButton
+              aria-label="toggle dark mode"
+              color="inherit"
+              onClick={() => dispatch(toggleThemeMode())}
+            >
+              {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+            {isLoggedIn ? (
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={2}
+                sx={{ display: { xs: "none", md: "flex" } }}
+              >
+                <IconButton
+                  size="large"
+                  aria-label="cart"
+                  color="inherit"
+                  sx={{ p: 0 }}
+                  onClick={() => {
+                    user?.cart?.contents?.length > 0
+                      ? navigate("/checkout")
+                      : navigate("/dashboard");
+                  }}
+                >
+                  <StyledBadge
+                    badgeContent={user?.cart?.contents?.length || 0}
+                  >
+                    <ShoppingCartOutlinedIcon
+                      sx={{ fontSize: theme?.fontSize?.xl }}
+                    />
+                  </StyledBadge>
+                </IconButton>
+                <Box onClick={handleProfileMenuOpen} sx={{ display: "flex", cursor: "pointer" }}>
+                  <CustomAvatar
+                    src={user?.profilePicture}
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                  />
+                  <UserName>
+                    {user?.firstName}
+                    <KeyboardArrowDownOutlinedIcon />
+                  </UserName>
+                </Box>
+              </Stack>
+            ) : (
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={4}
+                sx={{ display: { xs: "none", md: "flex" } }}
+              >
+                <AuthButton onClick={() => dispatch(setLoginOpen())}>
+                  Login
+                </AuthButton>
+                <AuthButton onClick={() => dispatch(setSignupOpen())}>
+                  Sign Up
+                </AuthButton>
+              </Stack>
+            )}
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
-                aria-label="show 17 new notifications"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
                 color="inherit"
-                sx={{ mr: 3, p: 0 }}
-                onClick={() => {
-                  user?.cart?.contents?.length > 0
-                    ? navigate("/checkout")
-                    : navigate("/dashboard");
-                }}
               >
-                <StyledBadge
-                  badgeContent={user?.cart?.contents?.length || 0}
-                  color="info"
-                >
-                  <ShoppingCartOutlinedIcon
-                    sx={{ fontSize: theme?.fontSize?.xl }}
-                  />
-                </StyledBadge>
+                <MoreIcon />
               </IconButton>
-              <Box onClick={handleProfileMenuOpen} sx={{ display: "flex" }}>
-                <CustomAvatar
-                  src={user?.profilePicture}
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                />
-                <UserName>
-                  {user?.firstName}
-                  <KeyboardArrowDownOutlinedIcon />
-                </UserName>
-              </Box>
             </Box>
-          ) : (
-            <Box
-              sx={{ display: { xs: "none", md: "flex" }, gap: "32px", mr: 8 }}
-            >
-              <AuthButton onClick={() => dispatch(setLoginOpen())}>
-                Login
-              </AuthButton>
-              <AuthButton onClick={() => dispatch(setSignupOpen())}>
-                Sign Up
-              </AuthButton>
-            </Box>
-          )}
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          </Stack>
         </Toolbar>
       </CustomAppBar>
       {renderMobileMenu}

@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import App from './App';
+import { store } from './logic/store';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('renders the application root', () => {
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
+  const titleElement = screen.getByText(/BiblioBazaar/i);
+  expect(titleElement).toBeInTheDocument();
 });

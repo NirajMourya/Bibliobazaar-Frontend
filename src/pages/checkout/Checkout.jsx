@@ -1,9 +1,11 @@
-import { Grid, Stack } from "@mui/material";
+import { Grid, IconButton, Stack } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   checkout,
   completeOrderUrl,
@@ -28,6 +30,7 @@ const Checkout = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const [addressSelected, setAddressSelected] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(20);
@@ -79,32 +82,46 @@ const Checkout = () => {
           key: razorpayId,
           amount: data.amount,
           currency: "INR",
-          name: "RazorPay Test",
-          description: "Bibliobazar payment description",
-          image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+          name: "BiblioBazaar",
+          description: "BiblioBazaar rent payment",
           order_id: data.id,
           // callback_url: "http://localhost:8080/payment/verify",
           handler: function (response) {
             paymentVerifyFn(response);
           },
           prefill: {
-            name: "Yathendra",
-            email: "yathendra@example.com",
-            contact: "9742788996",
+            name: [user?.firstName, user?.lastName].filter(Boolean).join(" "),
+            email: user?.emailId,
+            contact: user?.phoneNumber,
           },
           notes: {
             address: "BiblioBazaar Corporate Office",
           },
           theme: {
-            color: "#9A98F0",
+            color: theme?.primary?.main,
+          },
+          modal: {
+            // Razorpay disables page scroll while open; make sure it's restored
+            // if the user closes the popup without completing payment
+            ondismiss: function () {
+              setPaymentLoader(false);
+              document.body.style.overflow = "auto";
+            },
           },
         };
         const razor = new window.Razorpay(options);
+        razor.on("payment.failed", function (response) {
+          setPaymentLoader(false);
+          document.body.style.overflow = "auto";
+          toast.error(response?.error?.description || "Payment failed");
+        });
         razor.open();
       }
     } catch (e) {
       console.log(e);
-      throw Error(`Payment Failed`);
+      setPaymentLoader(false);
+      document.body.style.overflow = "auto";
+      toast.error(e?.response?.data?.message || "Payment failed, please try again");
     }
   };
 
@@ -176,7 +193,12 @@ const Checkout = () => {
 
   return (
     <Wrapper>
-      <PageTitle>Check Out</PageTitle>
+      <Stack direction="row" alignItems="center" spacing={1} mb={1}>
+        <IconButton aria-label="go back" onClick={() => navigate(-1)}>
+          <ArrowBackIcon />
+        </IconButton>
+        <PageTitle>Check Out</PageTitle>
+      </Stack>
       <Grid container spacing={4} mt={1}>
         <Grid item xs={12} md={6}>
           <OrderSummary />
@@ -200,7 +222,7 @@ const Checkout = () => {
       <Stack mt={4} justifyContent="center" alignItems="center">
         <PrimaryButton
           onClick={() => makePayment(Number(orderCost) + Number(deliveryFee))}
-          disabled={!addressSelected || user?.cart?.contents.length === 0}
+          disabled={!addressSelected || !user?.cart?.contents?.length}
         >
           {paymentLoader || completeOrderLoader || deleteAllLoader ? (
             <Spinner />

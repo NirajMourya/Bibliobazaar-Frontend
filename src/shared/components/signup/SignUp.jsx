@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 import Box from "@mui/material/Box";
@@ -31,11 +31,13 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: { xs: "92%", sm: 400 },
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 },
   borderRadius: "20px",
+  maxHeight: "90vh",
+  overflow: "auto",
 };
 
 const validationSchema = yup.object({
@@ -127,7 +129,7 @@ export default function SignUpModal(props) {
                 position: "absolute",
                 right: 8,
                 top: 8,
-                color: (theme) => theme.palette.grey[500],
+                color: (theme) => theme.palette.text.secondary,
               }}
             >
               <CloseIcon />
