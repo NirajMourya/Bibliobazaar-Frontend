@@ -5,14 +5,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   checkout,
   completeOrderUrl,
   deleteAllFromCartUrl,
   paymentVerify,
 } from "../../config/Config";
-import { clearCartContents, updateCart } from "../../logic/reducers/userSlice";
+import { updateCart } from "../../logic/reducers/userSlice";
 import Spinner from "../../shared/components/spinner/Spinner";
 
 import {
